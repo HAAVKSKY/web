@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m 'fix: repair critical bugs and add test suite *)",
+      "Bash(node test/run-tests.js)"
+    ]
+  }
+}

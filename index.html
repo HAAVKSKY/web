@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>五子棋 · Gomoku</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="logo">五子棋</h1>
+      <nav class="nav">
+        <button class="nav-btn active" data-mode="pvp">双人对战</button>
+        <button class="nav-btn" data-mode="pve">人机对战</button>
+      </nav>
+    </header>
+
+    <main class="main">
+      <aside class="sidebar" id="sidebar">
+        <div class="panel" id="modePanel">
+          <div class="panel-title">游戏模式</div>
+          <div class="rank-selector" id="rankSelector" hidden>
+            <div class="panel-subtitle">选择难度</div>
+            <div class="ranks">
+              <button class="rank-btn" data-rank="bronze">青铜</button>
+              <button class="rank-btn" data-rank="silver">白银</button>
+              <button class="rank-btn" data-rank="gold">黄金</button>
+              <button class="rank-btn" data-rank="platinum">铂金</button>
+              <button class="rank-btn" data-rank="diamond">钻石</button>
+              <button class="rank-btn" data-rank="star">星耀</button>
+              <button class="rank-btn" data-rank="king">王者</button>
+            </div>
+          </div>
+          <div class="game-info" id="gameInfo">
+            <div class="info-row">
+              <span class="info-label">当前回合</span>
+              <span class="info-value" id="turnDisplay">黑棋</span>
+            </div>
+            <div class="info-row" id="rankRow" hidden>
+              <span class="info-label">难度</span>
+              <span class="info-value" id="rankDisplay">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="statusPanel" hidden>
+          <div class="panel-title" id="statusTitle">游戏结束</div>
+          <div class="panel-body" id="statusBody"></div>
+          <div class="btn-group">
+            <button class="btn btn-primary" id="btnReplay">复盘分析</button>
+            <button class="btn btn-secondary" id="btnNewGame">新游戏</button>
+          </div>
+        </div>
+
+        <div class="panel" id="replayPanel" hidden>
+          <div class="panel-title">复盘分析</div>
+          <div class="panel-body replay-body" id="replayBody"></div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btnBackToGame">返回游戏</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="board-area">
+        <canvas id="board" width="600" height="600"></canvas>
+        <div class="move-counter" id="moveCounter">第 0 手</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal">
+      <div class="modal-content" id="modalContent"></div>
+      <button class="modal-close" id="modalClose">×</button>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/apiAi.js"></script>
+  <script src="js/analysis.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

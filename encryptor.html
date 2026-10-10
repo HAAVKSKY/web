@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Key 加密器 · 五子棋</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#1a1510;--surface:#2a2218;--surface2:#352c20;--accent:#d4a017;--text:#f5f0e6;--text2:#a89880;--radius:10px}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{background:var(--surface);border-radius:var(--radius);padding:32px;max-width:480px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+    h1{font-size:20px;margin-bottom:4px;color:var(--accent)}
+    .subtitle{font-size:13px;color:var(--text2);margin-bottom:24px}
+    label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+    input,select,textarea{width:100%;background:var(--surface2);border:1px solid transparent;border-radius:6px;color:var(--text);padding:10px 12px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    textarea{resize:vertical;min-height:60px;font-family:monospace;font-size:13px}
+    .field{margin-bottom:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    button{width:100%;padding:12px;border-radius:6px;border:none;background:var(--accent);color:var(--bg);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+    button:hover{opacity:.85}
+    button.secondary{background:var(--surface2);color:var(--text2);margin-top:8px}
+    button.secondary:hover{color:var(--text)}
+    .result{margin-top:16px;padding:12px;background:var(--surface2);border-radius:6px;font-family:monospace;font-size:12px;word-break:break-all;min-height:44px;color:var(--accent);line-height:1.6}
+    .hint{font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6}
+    .note{background:rgba(212,160,23,0.1);border-left:2px solid var(--accent);padding:10px 12px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.7}
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>API Key 加密器</h1>
+  <p class="subtitle">凯撒位移加密，保护你的密钥不暴露在代码中</p>
+
+  <div class="note">
+    在下方输入你的 <strong>明文 API Key</strong> 和加密偏移量，点击生成后复制输出的密文，填入主程序的配置区即可。
+  </div>
+
+  <div class="field">
+    <label>API Key（明文）</label>
+    <input type="text" id="apiKey" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx">
+  </div>
+
+  <div class="field">
+    <label>位移量（1–94，推荐 7）</label>
+    <input type="number" id="shift" value="7" min="1" max="94">
+  </div>
+
+  <button onclick="encrypt()">生成密文</button>
+
+  <div class="field" style="margin-top:16px">
+    <label>加密结果（复制以下内容填入主程序）</label>
+    <textarea id="output" readonly placeholder="密文将显示在这里..."></textarea>
+  </div>
+
+  <button class="secondary" onclick="copyOutput()">复制到剪贴板</button>
+
+  <p class="hint">
+    加密算法：凯撒密码（Caesar Cipher），对每个字符 ASCII 值加上偏移量取模 95（可打印字符范围）。
+    解密逻辑已内置于主程序中，无需额外工具。
+  </p>
+</div>
+
+<script>
+function encrypt() {
+  const key = document.getElementById('apiKey').value;
+  const shift = parseInt(document.getElementById('shift').value) || 7;
+  if (!key) { alert('请输入 API Key'); return; }
+  const encrypted = caesarEncrypt(key, shift);
+  // Store both ciphertext and shift so the game can decrypt
+  document.getElementById('output').value =
+    `// 主程序配置区，填入以下两行\nconst ENCRYPTED_API_KEY = "${encrypted}";\nconst KEY_SHIFT = ${shift};`;
+}
+
+function caesarEncrypt(text, shift) {
+  return text.split('').map(ch => {
+    const code = ch.charCodeAt(0);
+    // Printable ASCII range: 32 (~) = 126
+    if (code >= 32 && code <= 126) {
+      return String.fromCharCode(32 + ((code - 32 + shift) % 95));
+    }
+    return ch; // preserve non-printable as-is
+  }).join('');
+}
+
+function copyOutput() {
+  const out = document.getElementById('output');
+  out.select();
+  navigator.clipboard.writeText(out.value).then(() => {
+    const btn = document.querySelector('button.secondary');
+    btn.textContent = '已复制！';
+    setTimeout(() => btn.textContent = '复制到剪贴板', 1500);
+  });
+}
+</script>
+</body>
+</html>
